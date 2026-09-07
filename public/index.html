@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casa Nova Creative Factory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Casa Nova Creative Factory</h1>
+      <p class="subtitle">Pegá los prompts, apretá generar, editá en CapCut.</p>
+    </header>
+
+    <section class="panel">
+      <div class="field-row">
+        <label>Producto
+          <input id="producto" type="text" placeholder="Lymphatic Drainage" />
+        </label>
+        <label>Formato
+          <select id="formato">
+            <option value="9:16">9:16</option>
+            <option value="16:9">16:9</option>
+            <option value="1:1">1:1</option>
+          </select>
+        </label>
+        <label>Video
+          <select id="modelo">
+            <option>Veo 3.1 Fast</option>
+            <option>Veo 3.1</option>
+          </select>
+        </label>
+        <label>Duración
+          <select id="duracion">
+            <option>8 segundos</option>
+            <option>4 segundos</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label>Imágenes de referencia (hasta 3)
+          <input id="referencias" type="file" accept="image/*" multiple />
+        </label>
+      </div>
+    </section>
+
+    <section id="escenas"></section>
+
+    <button id="add-escena" class="secondary">+ Agregar escena</button>
+
+    <div class="generate-bar">
+      <button id="generar" class="primary">🚀 GENERAR TODO</button>
+    </div>
+
+    <section id="progreso" class="progreso" hidden>
+      <h2>Progreso</h2>
+      <div id="lista-progreso"></div>
+      <a id="descargar" class="primary" href="#" hidden download>DESCARGAR TODO .ZIP</a>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --border: #2a2f3a;
+  --text: #e7e9ee;
+  --muted: #9aa2b1;
+  --accent: #6c8cff;
+  --ok: #3ddc97;
+  --wait: #f5c04a;
+  --idle: #4a5060;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.app {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: 26px;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.field-row:last-child { margin-bottom: 0; }
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  flex: 1;
+  min-width: 160px;
+}
+
+input, select, textarea {
+  background: #10131a;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.escena {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.escena h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--accent);
+}
+
+.escena label { margin-bottom: 10px; }
+.escena label:last-child { margin-bottom: 0; }
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 10px 16px;
+  font-family: inherit;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.generate-bar { text-align: center; }
+
+button.primary, a.primary {
+  background: var(--accent);
+  color: #0b0d12;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 10px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.progreso {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.progreso h2 {
+  font-size: 16px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+#lista-progreso {
+  text-align: left;
+  max-width: 320px;
+  margin: 0 auto 20px;
+}
+
+.fila-progreso {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.estado-ok { color: var(--ok); }
+.estado-generando { color: var(--wait); }
+.estado-pendiente { color: var(--idle); }
+.estado-error { color: #ff6b6b; }

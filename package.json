@@ -1,0 +1,17 @@
+{
+  "name": "casa-nova-creative-factory",
+  "version": "0.1.0",
+  "description": "Panel local que organiza prompts de imagen/video y automatiza Google Flow para generar creativos en lote.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "express": "^4.19.2",
+    "playwright": "^1.47.0",
+    "archiver": "^7.0.1"
+  }
+}
