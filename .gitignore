@@ -4,6 +4,7 @@ downloads/
 .env
 *.log
 npm-debug.log*
+automation-recording.js
 
 # Playwright
 /test-results/

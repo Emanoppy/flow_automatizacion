@@ -5,7 +5,8 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node server/index.js"
+    "dev": "node server/index.js",
+    "record": "playwright codegen --target javascript -o automation-recording.js --save-storage=playwright-storage/flow-session.json https://labs.google/fx/tools/flow"
   },
   "license": "UNLICENSED",
   "private": true,

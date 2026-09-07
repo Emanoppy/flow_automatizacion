@@ -67,10 +67,35 @@ npm start
 
 Abre `http://localhost:3000`.
 
+## Cómo funciona Flow (confirmado con la documentación oficial + capturas reales)
+
+- URL: `https://labs.google/fx/tools/flow` (o `flow.google.com`, redirige ahí)
+- Se crea un "Nuevo proyecto", y dentro el prompt se escribe en el cuadro inferior central
+- Clic en el nombre del modelo abre el panel de configuración: **Imagen** o **Video**, relación de aspecto, modelo, calidad, duración, cantidad
+- **Fotogramas (Frames)**: acá se arrastra una imagen ya generada como "start frame" y se describe la acción/movimiento — esto es el encadenamiento imagen→video que necesitamos
+- **Ingredientes (Ingredients)**: referencias múltiples (ej. fotos del producto) para mantener consistencia entre generaciones
+- **Personajes**: `@NombreDelPersonaje` en el prompt reusa cara/outfit/voz consistente entre escenas
+- Descarga: hover sobre el asset → "Más" → "Descargar" (o "Descargar proyecto" completo)
+
+## Cómo grabar la automatización real (en vez de adivinar selectores)
+
+Playwright puede grabar una sesión real tuya y generar el código exacto con los selectores reales del DOM de Flow. Pasos:
+
+```bash
+npm run record
+```
+
+Esto abre un Chrome real apuntando a Flow. Hacé, a mano, UNA vuelta completa:
+1. Loguéate con tu cuenta de Google (la sesión queda guardada en `playwright-storage/`, que nunca se sube al repo)
+2. Creá un proyecto nuevo
+3. Generá una imagen de una escena
+4. Usá esa imagen como fotograma inicial ("Frames") y generá el video
+5. Descargá la imagen y el video
+6. Cerrá la ventana del navegador
+
+Al cerrar, queda un archivo `automation-recording.js` en la raíz del proyecto (ignorado por git) con el código Playwright exacto de todo lo que hiciste. Ese archivo es la base real para reemplazar `server/automation/flowAutomation.js`.
+
 ## Próximo paso
 
-Para conectar la automatización real con Flow, se necesitan capturas de pantalla de:
-1. Pantalla principal de Flow después de "Empezar" (cuadro de prompt + botones alrededor)
-2. Flujo de generación de imagen (Nano Banana / Imagen) y dónde aparece el resultado
-3. Cómo se sube/selecciona una imagen como referencia para generar video con Veo
-4. Botón de descarga del video generado
+1. Correr `npm run record` y hacer la vuelta completa descripta arriba
+2. Pasar el contenido de `automation-recording.js` para adaptarlo al pipeline (loop por escena, manejo de errores, espera a que termine la generación)
