@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Casa Nova · Puente de Flow",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Comprueba la conexión entre una pestaña de Flow y el panel local de Casa Nova.",
   "permissions": ["storage", "alarms"],
   "host_permissions": ["http://127.0.0.1/*", "https://flow.google.com/*", "https://labs.google/fx/tools/flow*"],

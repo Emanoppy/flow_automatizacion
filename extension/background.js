@@ -6,7 +6,7 @@ async function inspect() {
   if (running) return;
   running = true;
   try {
-    const { key } = await chrome.storage.session.get('key');
+    const { key, pendingResult } = await chrome.storage.session.get(['key', 'pendingResult']);
     if (!key) return;
     const tabs = await chrome.tabs.query({ url: FLOW_URLS });
     const states = await Promise.all(tabs.slice(0, 20).map(async tab => {
@@ -15,9 +15,20 @@ async function inspect() {
     }));
     const response = await fetch(`${PANEL}/api/bridge/heartbeat`, {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-      body: JSON.stringify({ tabs: states }), signal: AbortSignal.timeout(5000),
+      body: JSON.stringify({ tabs: states, version: '0.2.0', result: pendingResult }), signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) throw new Error(response.status === 401 ? 'Genera otra clave en el panel y vuelve a vincular.' : 'El panel rechazó la conexión.');
+    if (pendingResult) await chrome.storage.session.remove('pendingResult');
+    const { command } = await response.json();
+    if (command && command.type === 'prepare-prompt') {
+      const matching = tabs.filter(tab => { const url = new URL(tab.url); return url.origin + url.pathname === command.url; });
+      let result;
+      try {
+        if (matching.length !== 1) throw new Error('Abre una sola pestaña del proyecto seleccionado.');
+        result = await chrome.tabs.sendMessage(matching[0].id, command);
+      } catch (error) { result = { ok: false, error: error.message }; }
+      await chrome.storage.session.set({ pendingResult: { id: command.id, ok: result?.ok === true, error: result?.error } });
+    }
     await chrome.storage.session.set({ status: `Conectado · ${states.length} pestaña(s) de Flow`, checkedAt: Date.now() });
   } catch (error) {
     await chrome.storage.session.set({ status: error.message === 'Failed to fetch' ? 'Abre el panel local e intenta otra vez.' : error.message, checkedAt: Date.now() });

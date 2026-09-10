@@ -1,5 +1,11 @@
 # Puente local de Flow — primera versión
 
+## Actualización 0.2.0
+
+El panel permite seleccionar un proyecto detectado y enviar un prompt de prueba. La extensión lo coloca en un único campo editable visible, solo si está vacío. No pulsa Generar. Se confirma el texto completo y se informa el resultado al panel. Un envío entregado no se reenvía automáticamente si se pierde la confirmación.
+
+Para actualizar: recarga la extensión desde chrome://extensions y después la pestaña de Flow. Reiniciar el servidor invalida la clave anterior: genera una nueva y vincula otra vez. La prueba completa de escritura en Flow requiere esta actualización cargada por el usuario; los tests automatizados no sustituyen esa prueba real.
+
 ## Qué funciona
 
 Extensión Manifest V3 para Chrome o Edge + servicio local Express + estado en el panel.

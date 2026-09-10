@@ -2,6 +2,27 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createBrowserBridge } = require('../server/lib/browserBridge');
 
+test('envío único, proyecto explícito y confirmación por identificador', () => {
+  let time = 1000;
+  const bridge = createBrowserBridge({ now: () => time });
+  const url = 'https://flow.google.com/project/f95173f2-fbd4-492a-ab8c-921d56b667e3';
+  const state = { version: '0.2.0', tabs: [{ url, editorDetected: true }] };
+  bridge.receive(state);
+  assert.throws(() => bridge.enqueue({ url: 'https://flow.google.com/', prompt: 'test' }));
+  const { id } = bridge.enqueue({ url, prompt: 'Una botella azul' });
+  assert.throws(() => bridge.enqueue({ url, prompt: 'duplicado' }));
+  assert.equal(bridge.next().id, id);
+  assert.equal(bridge.next(), null);
+  bridge.receive({ ...state, result: { id: 'incorrecto', ok: true } });
+  assert.equal(bridge.status().command.state, 'sent');
+  bridge.receive({ ...state, result: { id, ok: true } });
+  assert.equal(bridge.status().command.state, 'prepared');
+  bridge.enqueue({ url, prompt: 'Otro' });
+  bridge.next(); time += 90001;
+  assert.equal(bridge.status().command.state, 'uncertain');
+  assert.equal(bridge.next(), null);
+});
+
 test('vinculación rota la clave y desconecta sesiones anteriores', () => {
   const bridge = createBrowserBridge();
   const first = bridge.pair();

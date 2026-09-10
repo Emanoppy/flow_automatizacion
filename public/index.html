@@ -22,6 +22,12 @@
         <input id="bridge-key" readonly type="password" autocomplete="off" />
         <button id="copy-bridge-key" type="button">Copiar clave</button>
       </label>
+      <div class="field-row" style="margin-top:20px">
+        <label>Proyecto de destino<select id="bridge-project"><option value="">Sin proyecto disponible</option></select></label>
+      </div>
+      <label>Prompt de prueba<textarea id="bridge-prompt" maxlength="10000" placeholder="Escribe el prompt que quieres colocar en Flow"></textarea></label>
+      <button id="prepare-prompt" type="button" disabled>Enviar prompt a Flow sin generar</button>
+      <p id="command-status" role="status">Actualiza la extensión a 0.2.0 para enviar prompts. No consume créditos.</p>
       <details><summary>Cómo conectar el navegador</summary>
         <ol><li>En Chrome o Edge abre la página de extensiones y activa el modo de desarrollador.</li>
         <li>Usa «Cargar descomprimida» y selecciona la carpeta <code>extension</code> del proyecto.</li>

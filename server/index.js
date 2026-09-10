@@ -34,10 +34,15 @@ app.post('/api/bridge/heartbeat', (req, res) => {
   if (!bridge.authorized(req.headers.authorization)) return res.status(401).json({ error: 'Vuelve a vincular el puente.' });
   try {
     bridge.receive(req.body);
-    res.json({ ok: true });
+    res.json({ ok: true, command: bridge.next() });
   } catch {
     res.status(400).json({ error: 'Estado del navegador inválido.' });
   }
+});
+
+app.post('/api/bridge/prepare', (req, res) => {
+  try { res.json(bridge.enqueue(req.body)); }
+  catch (error) { res.status(409).json({ error: error.message }); }
 });
 
 app.post('/api/jobs', (req, res) => {
