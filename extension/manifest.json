@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Casa Nova · Puente de Flow",
+  "version": "0.1.0",
+  "description": "Comprueba la conexión entre una pestaña de Flow y el panel local de Casa Nova.",
+  "permissions": ["storage", "alarms"],
+  "host_permissions": ["http://127.0.0.1/*", "https://flow.google.com/*", "https://labs.google/fx/tools/flow*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_title": "Conectar Flow" },
+  "content_scripts": [{
+    "matches": ["https://flow.google.com/*", "https://labs.google/fx/tools/flow*"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }]
+}

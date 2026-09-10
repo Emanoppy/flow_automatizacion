@@ -4,6 +4,7 @@
   "description": "Panel local que organiza prompts de imagen/video y automatiza Google Flow para generar creativos en lote.",
   "main": "server/index.js",
   "scripts": {
+    "test": "node --test",
     "start": "node server/index.js",
     "dev": "node server/index.js",
     "record": "playwright codegen --target javascript -o automation-recording.js --save-storage=playwright-storage/flow-session.json https://labs.google/fx/tools/flow"

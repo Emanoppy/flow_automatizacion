@@ -11,6 +11,17 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+.bridge-panel h2 { font-size: 18px; margin-top: 0; }
+.bridge-panel p, .bridge-panel li { color: var(--muted); line-height: 1.6; }
+.bridge-panel details { margin-top: 18px; }
+.bridge-panel summary { cursor: pointer; }
+#bridge-status { color: var(--wait); font-weight: 600; }
+#bridge-status[data-connected="true"] { color: var(--ok); }
+#pair-result { margin-top: 14px; }
+.demo-choice { display: block; margin: 18px 0; }
+.demo-choice input { margin-right: 8px; }
 
 body {
   margin: 0;

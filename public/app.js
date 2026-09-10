@@ -6,6 +6,11 @@ const listaProgreso = document.getElementById('lista-progreso');
 const descargarLink = document.getElementById('descargar');
 
 let escenaCount = 0;
+const demoMode = document.getElementById('demo-mode');
+demoMode.addEventListener('change', () => {
+  generarBtn.disabled = !demoMode.checked;
+  generarBtn.textContent = demoMode.checked ? 'Probar lote simulado' : 'Generación real pendiente de conectar';
+});
 
 function addEscena() {
   escenaCount += 1;
@@ -62,6 +67,8 @@ async function pollJob(id) {
   if (job.zipReady) {
     descargarLink.href = `/api/jobs/${id}/download`;
     descargarLink.hidden = false;
+    generarBtn.disabled = !demoMode.checked;
+    generarBtn.textContent = 'Probar lote simulado';
     return;
   }
 
@@ -74,6 +81,7 @@ async function pollJob(id) {
 }
 
 generarBtn.addEventListener('click', async () => {
+  if (!demoMode.checked) return;
   const producto = document.getElementById('producto').value.trim();
   const escenas = recolectarEscenas().filter((e) => e.promptImagen || e.promptVideo);
 
@@ -96,6 +104,7 @@ generarBtn.addEventListener('click', async () => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      demo: true,
       producto,
       formato: document.getElementById('formato').value,
       modelo: document.getElementById('modelo').value,
@@ -109,7 +118,7 @@ generarBtn.addEventListener('click', async () => {
     const err = await res.json();
     alert(`Error: ${err.error}`);
     generarBtn.disabled = false;
-    generarBtn.textContent = '🚀 GENERAR TODO';
+    generarBtn.textContent = 'Probar lote simulado';
     return;
   }
 

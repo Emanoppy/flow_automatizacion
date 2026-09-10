@@ -13,6 +13,24 @@
       <p class="subtitle">Pegá los prompts, apretá generar, editá en CapCut.</p>
     </header>
 
+    <section class="panel bridge-panel" aria-labelledby="bridge-heading">
+      <h2 id="bridge-heading">Conexión con Google Flow</h2>
+      <p id="bridge-status" role="status">Comprobando conexión…</p>
+      <p id="bridge-detail">Abre Flow y conecta la extensión en el mismo navegador.</p>
+      <button id="pair-bridge" type="button">Generar clave de vinculación</button>
+      <label id="pair-result" hidden>Clave temporal para la extensión
+        <input id="bridge-key" readonly type="password" autocomplete="off" />
+        <button id="copy-bridge-key" type="button">Copiar clave</button>
+      </label>
+      <details><summary>Cómo conectar el navegador</summary>
+        <ol><li>En Chrome o Edge abre la página de extensiones y activa el modo de desarrollador.</li>
+        <li>Usa «Cargar descomprimida» y selecciona la carpeta <code>extension</code> del proyecto.</li>
+        <li>Abre Flow en ese navegador e inicia sesión. Si ya estaba abierto, recarga la pestaña.</li>
+        <li>Genera una clave aquí y pégala en «Casa Nova · Puente de Flow».</li></ol>
+        <p>Vuelve a vincular si reinicias el servidor o el navegador. Esta versión comprueba la conexión; todavía no envía generaciones.</p>
+      </details>
+    </section>
+
     <section class="panel">
       <div class="field-row">
         <label>Producto
@@ -51,16 +69,18 @@
     <button id="add-escena" class="secondary">+ Agregar escena</button>
 
     <div class="generate-bar">
-      <button id="generar" class="primary">🚀 GENERAR TODO</button>
+      <label class="demo-choice"><input id="demo-mode" type="checkbox" /> Probar con archivos simulados (sin usar Flow)</label>
+      <button id="generar" class="primary" disabled>Generación real pendiente de conectar</button>
     </div>
 
     <section id="progreso" class="progreso" hidden>
       <h2>Progreso</h2>
       <div id="lista-progreso"></div>
       <a id="descargar" class="primary" href="#" hidden download>DESCARGAR TODO .ZIP</a>
-    </div>
+    </section>
   </div>
 
   <script src="app.js"></script>
+  <script src="bridge.js"></script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="es"><head><meta charset="UTF-8"><title>Puente de Flow</title>
+<style>body{width:320px;padding:18px;background:#11151e;color:#eef2ff;font:14px system-ui}h1{font-size:19px}p{line-height:1.5;color:#bac5d9}input,button{box-sizing:border-box;width:100%;padding:10px;margin:6px 0;border-radius:7px;border:1px solid #43516b}button{cursor:pointer;background:#a5bcff}input{background:#1c2535;color:white}#status{min-height:40px}</style></head>
+<body><h1>Conectar Flow</h1><p>Abre el panel local, genera una clave y pégala aquí. Mantén abierta una pestaña de Flow en este navegador.</p>
+<label for="key">Clave del panel local</label><input id="key" type="password" autocomplete="off" placeholder="Clave de vinculación">
+<button id="pair">Vincular y comprobar</button><button id="inspect">Comprobar conexión</button><button id="disconnect">Desconectar</button>
+<p id="status" role="status">Sin comprobar</p><p>Solo detecta la pestaña y el editor. La generación automática aún no está disponible.</p><script src="popup.js"></script></body></html>

@@ -1,14 +1,49 @@
 const express = require('express');
 const path = require('path');
 const { createJob, getJob } = require('./lib/jobRunner');
+const { createBrowserBridge } = require('./lib/browserBridge');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const bridge = createBrowserBridge();
+
+app.use((req, res, next) => {
+  if (![`127.0.0.1:${PORT}`, `localhost:${PORT}`].includes(req.headers.host)) {
+    return res.status(403).json({ error: 'Acceso local requerido.' });
+  }
+  if (req.path !== '/api/bridge/heartbeat') {
+    const origin = req.headers.origin;
+    if ((origin && origin !== `http://${req.headers.host}`) ||
+        ['cross-site', 'same-site'].includes(req.headers['sec-fetch-site'])) {
+      return res.status(403).json({ error: 'Abre el panel local directamente.' });
+    }
+  }
+  next();
+});
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+app.get('/api/bridge/status', (req, res) => {
+  res.set('Cache-Control', 'no-store').json(bridge.status());
+});
+app.post('/api/bridge/pair', (req, res) => {
+  res.set('Cache-Control', 'no-store').json(bridge.pair());
+});
+app.post('/api/bridge/heartbeat', (req, res) => {
+  if (!bridge.authorized(req.headers.authorization)) return res.status(401).json({ error: 'Vuelve a vincular el puente.' });
+  try {
+    bridge.receive(req.body);
+    res.json({ ok: true });
+  } catch {
+    res.status(400).json({ error: 'Estado del navegador inválido.' });
+  }
+});
+
 app.post('/api/jobs', (req, res) => {
+  if (req.body.demo !== true) {
+    return res.status(409).json({ error: 'La generación real todavía no está conectada. Activa la demostración para probar el panel.' });
+  }
   const { producto, formato, modelo, duracion, referencias, escenas } = req.body;
 
   if (!producto || !Array.isArray(escenas) || escenas.length === 0) {
@@ -51,6 +86,9 @@ app.get('/api/jobs/:id/download', (req, res) => {
   res.download(job.zipPath);
 });
 
-app.listen(PORT, () => {
-  console.log(`Casa Nova Creative Factory corriendo en http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, '127.0.0.1', () => {
+    console.log(`Casa Nova Creative Factory corriendo en http://127.0.0.1:${PORT}`);
+  });
+}
+module.exports = app;
