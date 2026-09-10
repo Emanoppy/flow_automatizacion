@@ -22,7 +22,7 @@ async function refreshBridge() {
     if (state.command) document.getElementById('command-status').textContent = messages[state.command.state] || state.command.state;
     bridgeDetail.textContent = project ? `Proyecto: ${project.projectId}. Generación automática pendiente de conectar.` : 'La sesión de Google permanece en tu navegador. La conexión se comprueba cada 30 segundos.';
   } catch { bridgeStatus.textContent = 'No se puede contactar con el servidor local'; }
-  finally { setTimeout(refreshBridge, 5000); }
+  finally { setTimeout(refreshBridge, 1000); }
 }
 document.getElementById('pair-bridge').addEventListener('click', async () => {
   try {

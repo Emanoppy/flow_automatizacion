@@ -27,7 +27,16 @@ async function inspect() {
         if (matching.length !== 1) throw new Error('Abre una sola pestaña del proyecto seleccionado.');
         result = await chrome.tabs.sendMessage(matching[0].id, command);
       } catch (error) { result = { ok: false, error: error.message }; }
-      await chrome.storage.session.set({ pendingResult: { id: command.id, ok: result?.ok === true, error: result?.error } });
+      const confirmation = { id: command.id, ok: result?.ok === true, error: result?.error };
+      await chrome.storage.session.set({ pendingResult: confirmation });
+      // Confirmar ahora; conservar el resultado si falla la red para el próximo pulso.
+      const acknowledgement = await fetch(`${PANEL}/api/bridge/heartbeat`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+        body: JSON.stringify({ tabs: states, version: '0.2.0', result: confirmation }),
+        signal: AbortSignal.timeout(5000),
+      });
+      if (!acknowledgement.ok) throw new Error('Prompt procesado; confirmación pendiente. Se reintentará el aviso.');
+      await chrome.storage.session.remove('pendingResult');
     }
     await chrome.storage.session.set({ status: `Conectado · ${states.length} pestaña(s) de Flow`, checkedAt: Date.now() });
   } catch (error) {
