@@ -1,5 +1,6 @@
 const bridgeStatus = document.getElementById('bridge-status');
 const bridgeDetail = document.getElementById('bridge-detail');
+let currentCommandId = null;
 async function refreshBridge() {
   try {
     const response = await fetch('/api/bridge/status', { cache: 'no-store' });
@@ -17,8 +18,14 @@ async function refreshBridge() {
       const option = document.createElement('option'); option.value = tab.url; option.textContent = tab.projectId; select.append(option);
     }
     if ([...select.options].some(o => o.value === selected)) select.value = selected;
-    document.getElementById('prepare-prompt').disabled = state.version !== '0.2.0' || !select.value || ['queued', 'sent'].includes(state.command?.state);
+    const busy = ['queued', 'sent', 'submitted', 'uncertain'].includes(state.command?.state);
+    document.getElementById('prepare-prompt').disabled = !['0.2.0', '0.3.0'].includes(state.version) || !select.value || busy;
+    document.getElementById('generate-image').disabled = state.version !== '0.3.0' || !select.value || busy;
+    currentCommandId = state.command?.id;
+    document.getElementById('close-command').hidden = !['submitted', 'uncertain', 'error'].includes(state.command?.state);
     const messages = { queued: 'En cola. La extensión recogerá el prompt en hasta 30 segundos.', sent: 'Enviado. Esperando confirmación de Flow.', prepared: 'Prompt colocado en Flow. No se ha pulsado Generar.', error: state.command?.error, uncertain: 'Sin confirmación. Revisa Flow antes de repetir.', expired: 'El envío caducó. Vuelve a conectar el puente.' };
+    messages.submitted = 'Se pulsó Generar en Flow. Revisa allí el resultado; aún no se ha verificado ni descargado la imagen.';
+    messages.closed = 'Seguimiento cerrado por el usuario. Puedes enviar otra operación.';
     if (state.command) document.getElementById('command-status').textContent = messages[state.command.state] || state.command.state;
     bridgeDetail.textContent = project ? `Proyecto: ${project.projectId}. Generación automática pendiente de conectar.` : 'La sesión de Google permanece en tu navegador. La conexión se comprueba cada 30 segundos.';
   } catch { bridgeStatus.textContent = 'No se puede contactar con el servidor local'; }
@@ -33,6 +40,21 @@ document.getElementById('pair-bridge').addEventListener('click', async () => {
     document.getElementById('pair-result').hidden = false;
     bridgeStatus.textContent = 'Clave creada. Pégala en la extensión para conectar.';
   } catch { bridgeStatus.textContent = 'No se pudo crear la clave. Comprueba el servidor.'; }
+});
+
+document.getElementById('generate-image').addEventListener('click', async event => {
+  event.target.disabled = true;
+  try {
+    const response = await fetch('/api/bridge/generate-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: document.getElementById('bridge-project').value, prompt: document.getElementById('bridge-prompt').value, format: document.getElementById('image-format').value }) });
+    const result = await response.json();
+    document.getElementById('command-status').textContent = response.ok ? 'Generación en cola. Mantén abierto Flow y no cambies sus ajustes.' : result.error;
+  } catch { document.getElementById('command-status').textContent = 'No se pudo contactar con el servidor.'; }
+});
+document.getElementById('close-command').addEventListener('click', async () => {
+  try {
+    const response = await fetch('/api/bridge/close', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: currentCommandId }) });
+    if (!response.ok) throw new Error();
+  } catch { document.getElementById('command-status').textContent = 'No se pudo cerrar el seguimiento.'; }
 });
 document.getElementById('copy-bridge-key').addEventListener('click', async event => {
   try {

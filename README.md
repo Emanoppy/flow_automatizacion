@@ -1,5 +1,13 @@
 # Casa Nova Creative Factory
 
+## Actualización de desarrollo — 11 de septiembre de 2026
+
+Extensión **0.3.0**: nueva operación experimental de generación de una imagen. Configura modo Imagen, formato y x1; exige Nano Banana 2 y costo visible de 0 puntos; verifica prompt y proyecto antes de pulsar Generar una sola vez. El panel distingue envío de resultado terminado y permite cerrar el seguimiento después de revisarlo en Flow.
+
+**Pendiente de validación real por el usuario con la extensión 0.3.0 recargada.** Los controles se inspeccionaron en Flow, pero no se ha ejecutado aún el recorrido completo desde esta versión. La asociación de resultado, seguimiento automático y descarga verificada siguen pendientes. El resto de este documento describe la base validada en 0.2.1.
+
+Actualizar: recargar extensión y pestaña de Flow, reiniciar servidor, recargar panel y vincular con una nueva clave. Para probar, seleccionar Nano Banana 2 en Flow y usar el nuevo botón Generar una imagen en Flow. No repetir si el estado indica envío incierto: revisar el proyecto primero.
+
 Aplicación en desarrollo para producir anuncios con IA para una tienda y una futura agencia de creativos. La visión es ofrecer después el sistema a otras personas que produzcan videos a gran escala.
 
 **Estado al 10 de septiembre de 2026:** panel local + extensión Chrome/Edge 0.2.1 conectados. El envío de prompts al editor de Flow está probado por el usuario. **La generación y descarga automáticas desde el panel aún NO están implementadas.**

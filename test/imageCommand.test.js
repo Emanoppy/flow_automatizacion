@@ -1,0 +1,23 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { createBrowserBridge } = require('../server/lib/browserBridge');
+test('generación exige versión compatible y no declara resultado terminado', () => {
+  const bridge = createBrowserBridge();
+  const url = 'https://flow.google.com/project/f95173f2-fbd4-492a-ab8c-921d56b667e3';
+  const tabs = [{ url, editorDetected: true }];
+  bridge.receive({ tabs, version: '0.2.0' });
+  const input = { type: 'generate-image', url, prompt: 'Botella', format: '9:16' };
+  assert.throws(() => bridge.enqueue(input));
+  bridge.receive({ tabs, version: '0.3.0' });
+  assert.throws(() => bridge.enqueue({ ...input, format: 'invalid' }));
+  const { id } = bridge.enqueue(input);
+  assert.equal(bridge.next().type, 'generate-image');
+  assert.equal(bridge.next(), null);
+  bridge.receive({ tabs, version: '0.3.0', result: { id, ok: true, submitted: true } });
+  assert.equal(bridge.status().command.state, 'submitted');
+  assert.throws(() => bridge.enqueue(input));
+  assert.throws(() => bridge.enqueue({ ...input, type: 'prepare-prompt' }));
+  assert.throws(() => bridge.close('wrong'));
+  bridge.close(id);
+  assert.doesNotThrow(() => bridge.enqueue(input));
+});

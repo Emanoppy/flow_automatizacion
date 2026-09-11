@@ -1,5 +1,11 @@
 # Continuidad del desarrollo
 
+## Trabajo posterior — 11 de septiembre de 2026
+
+Implementada versión experimental 0.3.0 para enviar UNA imagen desde el panel. Nuevo adaptador extension/imageGeneration.js: controles DOM observados, modo Imagen, formato, x1, Nano Banana 2 y costo 0 comprobados antes de un único clic. Nuevo estado submitted no equivale a imagen terminada; cierre manual del seguimiento para desbloquear otra operación.
+
+Falta cargar esta actualización en Chrome y validar con el usuario. No afirmar generación real comprobada desde el panel todavía. Después implementar asociación del resultado con el trabajo y descarga verificada. La documentación inferior conserva contexto histórico de 0.2.1.
+
 Fecha de corte: 10 de septiembre de 2026.
 
 ## Intención del usuario

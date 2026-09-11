@@ -41,7 +41,15 @@ app.post('/api/bridge/heartbeat', (req, res) => {
 });
 
 app.post('/api/bridge/prepare', (req, res) => {
-  try { res.json(bridge.enqueue(req.body)); }
+  try { res.json(bridge.enqueue({ ...req.body, type: 'prepare-prompt' })); }
+  catch (error) { res.status(409).json({ error: error.message }); }
+});
+app.post('/api/bridge/generate-image', (req, res) => {
+  try { res.json(bridge.enqueue({ ...req.body, type: 'generate-image' })); }
+  catch (error) { res.status(409).json({ error: error.message }); }
+});
+app.post('/api/bridge/close', (req, res) => {
+  try { bridge.close(req.body.id); res.json({ ok: true }); }
   catch (error) { res.status(409).json({ error: error.message }); }
 });
 

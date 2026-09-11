@@ -15,24 +15,24 @@ async function inspect() {
     }));
     const response = await fetch(`${PANEL}/api/bridge/heartbeat`, {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-      body: JSON.stringify({ tabs: states, version: '0.2.0', result: pendingResult }), signal: AbortSignal.timeout(5000),
+      body: JSON.stringify({ tabs: states, version: '0.3.0', result: pendingResult }), signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) throw new Error(response.status === 401 ? 'Genera otra clave en el panel y vuelve a vincular.' : 'El panel rechazó la conexión.');
     if (pendingResult) await chrome.storage.session.remove('pendingResult');
     const { command } = await response.json();
-    if (command && command.type === 'prepare-prompt') {
+    if (command && ['prepare-prompt', 'generate-image'].includes(command.type)) {
       const matching = tabs.filter(tab => { const url = new URL(tab.url); return url.origin + url.pathname === command.url; });
       let result;
       try {
         if (matching.length !== 1) throw new Error('Abre una sola pestaña del proyecto seleccionado.');
         result = await chrome.tabs.sendMessage(matching[0].id, command);
       } catch (error) { result = { ok: false, error: error.message }; }
-      const confirmation = { id: command.id, ok: result?.ok === true, error: result?.error };
+      const confirmation = { id: command.id, ok: result?.ok === true, submitted: result?.submitted === true, uncertain: result?.uncertain === true, error: result?.error };
       await chrome.storage.session.set({ pendingResult: confirmation });
       // Confirmar ahora; conservar el resultado si falla la red para el próximo pulso.
       const acknowledgement = await fetch(`${PANEL}/api/bridge/heartbeat`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ tabs: states, version: '0.2.0', result: confirmation }),
+        body: JSON.stringify({ tabs: states, version: '0.3.0', result: confirmation }),
         signal: AbortSignal.timeout(5000),
       });
       if (!acknowledgement.ok) throw new Error('Prompt procesado; confirmación pendiente. Se reintentará el aviso.');

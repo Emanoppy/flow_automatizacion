@@ -1,6 +1,10 @@
 // Solo diagnóstico de controles visibles. No lee cookies ni datos de la cuenta.
 chrome.runtime.onMessage.addListener((message, sender, reply) => {
   if (sender.id !== chrome.runtime.id) return;
+  if (message?.type === 'generate-image') {
+    generateFlowImage(message).then(reply).catch(error => reply({ ok: false, error: error.message }));
+    return true;
+  }
   if (message?.type === 'prepare-prompt') {
     const current = location.origin + location.pathname;
     if (message.url !== current || typeof message.prompt !== 'string' || message.prompt.length > 10000) {
